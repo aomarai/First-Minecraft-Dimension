@@ -4,8 +4,10 @@ plugins {
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 
-    // Checkstyle plugin
+    // Pre-commit plugins
     id 'checkstyle'
+    id 'pmd'
+    id 'com.github.spotbugs' version '4.7.6'
 }
 
 // Checkstyle configuration
@@ -16,9 +18,45 @@ checkstyle {
 
 tasks.withType(Checkstyle).configureEach {
     reports {
-        xml.required = true // Enable XML reports
+        xml.required = false // Enable XML reports
         html.required = true // Enable HTML reports
-        // Alternatively, you can enable XML and disable HTML, or enable both
+    }
+}
+
+// PMD configuration
+pmd {
+    toolVersion = '6.55.0'  // Specify the PMD version
+    sourceSets = [project.sourceSets.main]  // Correctly reference sourceSets
+    reportsDir = file("$project.buildDir/reports/pmd")
+    ruleSets = [
+            'category/java/bestpractices.xml',
+            'category/java/design.xml',
+            'category/java/errorprone.xml',
+            'category/java/performance.xml',
+            'category/java/multithreading.xml',
+            'category/java/security.xml'
+    ]  // Specify rule sets or leave empty to use defaults
+}
+
+tasks.named('pmdMain').configure {
+    reports {
+        xml.required = false
+        html.required = true
+    }
+}
+
+spotbugs {
+    toolVersion = '4.8.2'  // Specify the SpotBugs version
+    ignoreFailures = true
+    effort = 'max'
+    reportLevel = 'high'
+    reportsDir = file("$project.buildDir/reports/spotbugs")
+}
+
+tasks.named('spotbugsMain').configure {
+    reports {
+        xml.required = false
+        html.required = true
     }
 }
 
