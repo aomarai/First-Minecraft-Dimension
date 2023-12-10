@@ -3,6 +3,23 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+
+    // Checkstyle plugin
+    id 'checkstyle'
+}
+
+// Checkstyle configuration
+checkstyle {
+    toolVersion = '10.12.5'
+    file('config/checkstyle/checkstyle.xml')
+}
+
+tasks.withType(Checkstyle).configureEach {
+    reports {
+        xml.required = true // Enable XML reports
+        html.required = true // Enable HTML reports
+        // Alternatively, you can enable XML and disable HTML, or enable both
+    }
 }
 
 version = mod_version
